@@ -923,6 +923,7 @@ local strings = {
     [BATTLESCROLLS_PC_KEYBIND_OPEN_JOURNAL] = "打开 Battle Scrolls",
     [BATTLESCROLLS_PC_NOT_READY] = "Battle Scrolls 仍在加载。请稍后再试。",
     [BATTLESCROLLS_PC_REQUIRES_GAMEPAD_MODE] = "Battle Scrolls 日志使用手柄界面。请在设置中开启手柄模式，若设为自动则拿起手柄，然后重新打开。",
+    [BATTLESCROLLS_PC_KB_CLICK_FOR_DETAILS] = "点击以显示详情面板。",
     [BATTLESCROLLS_PC_KB_NOT_YET] = "键盘模式下尚不可用。切换到手柄模式以查看完整日志。",
 }
 

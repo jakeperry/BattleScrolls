@@ -923,6 +923,7 @@ local strings = {
     [BATTLESCROLLS_PC_KEYBIND_OPEN_JOURNAL] = "Battle Scrollsを開く",
     [BATTLESCROLLS_PC_NOT_READY] = "Battle Scrollsはまだ読み込み中です。しばらくしてから再試行してください。",
     [BATTLESCROLLS_PC_REQUIRES_GAMEPAD_MODE] = "Battle Scrollsのジャーナルはゲームパッドインターフェースを使用します。設定でゲームパッドモードをオンにするか、自動に設定されている場合はコントローラーを持ってから、もう一度開いてください。",
+    [BATTLESCROLLS_PC_KB_CLICK_FOR_DETAILS] = "クリックすると詳細パネルを表示します。",
     [BATTLESCROLLS_PC_KB_NOT_YET] = "キーボードモードではまだ利用できません。完全なジャーナルを表示するにはゲームパッドモードに切り替えてください。",
 }
 

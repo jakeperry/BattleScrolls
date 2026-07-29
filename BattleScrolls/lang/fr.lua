@@ -923,6 +923,7 @@ local strings = {
     [BATTLESCROLLS_PC_KEYBIND_OPEN_JOURNAL] = "Ouvrir Battle Scrolls",
     [BATTLESCROLLS_PC_NOT_READY] = "Battle Scrolls est encore en cours de chargement. Réessayez dans un instant.",
     [BATTLESCROLLS_PC_REQUIRES_GAMEPAD_MODE] = "Le journal Battle Scrolls utilise l'interface manette. Activez le mode manette dans les paramètres, ou prenez une manette s'il est réglé sur Automatique, puis rouvrez-le.",
+    [BATTLESCROLLS_PC_KB_CLICK_FOR_DETAILS] = "Cliquez pour afficher le panneau de détails.",
     [BATTLESCROLLS_PC_KB_NOT_YET] = "Pas encore disponible en mode clavier. Passez en mode manette pour le journal complet.",
 }
 

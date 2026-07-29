@@ -923,6 +923,7 @@ local strings = {
     [BATTLESCROLLS_PC_KEYBIND_OPEN_JOURNAL] = "Abrir Battle Scrolls",
     [BATTLESCROLLS_PC_NOT_READY] = "Battle Scrolls aún se está cargando. Vuelve a intentarlo en un momento.",
     [BATTLESCROLLS_PC_REQUIRES_GAMEPAD_MODE] = "El diario de Battle Scrolls usa la interfaz de mando. Activa el modo mando en los ajustes, o coge un mando si está en Automático, y vuelve a abrirlo.",
+    [BATTLESCROLLS_PC_KB_CLICK_FOR_DETAILS] = "Haz clic para mostrar el panel de detalles.",
     [BATTLESCROLLS_PC_KB_NOT_YET] = "Aún no disponible en el modo teclado. Cambia al modo mando para ver el diario completo.",
 }
 

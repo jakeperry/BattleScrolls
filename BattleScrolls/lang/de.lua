@@ -923,6 +923,7 @@ local strings = {
     [BATTLESCROLLS_PC_KEYBIND_OPEN_JOURNAL] = "Battle Scrolls öffnen",
     [BATTLESCROLLS_PC_NOT_READY] = "Battle Scrolls lädt noch. Versuche es in einem Moment erneut.",
     [BATTLESCROLLS_PC_REQUIRES_GAMEPAD_MODE] = "Das Battle-Scrolls-Journal verwendet die Gamepad-Oberfläche. Aktiviere den Gamepad-Modus in den Einstellungen oder nimm einen Controller in die Hand, wenn er auf Automatisch gesetzt ist, und öffne es dann erneut.",
+    [BATTLESCROLLS_PC_KB_CLICK_FOR_DETAILS] = "Klicke, um das Detailfenster anzuzeigen.",
     [BATTLESCROLLS_PC_KB_NOT_YET] = "In der Tastaturansicht noch nicht verfügbar. Wechsle in den Gamepad-Modus für das vollständige Journal.",
 }
 

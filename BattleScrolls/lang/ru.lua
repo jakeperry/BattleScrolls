@@ -925,6 +925,7 @@ local strings = {
     [BATTLESCROLLS_PC_KEYBIND_OPEN_JOURNAL] = "Открыть Battle Scrolls",
     [BATTLESCROLLS_PC_NOT_READY] = "Battle Scrolls ещё загружается. Повторите попытку через мгновение.",
     [BATTLESCROLLS_PC_REQUIRES_GAMEPAD_MODE] = "Журнал Battle Scrolls использует интерфейс геймпада. Включите режим геймпада в настройках или возьмите контроллер, если выбран режим «Автоматически», затем откройте журнал снова.",
+    [BATTLESCROLLS_PC_KB_CLICK_FOR_DETAILS] = "Нажмите, чтобы показать панель подробностей.",
     [BATTLESCROLLS_PC_KB_NOT_YET] = "Пока недоступно в режиме клавиатуры. Переключитесь в режим геймпада для полного журнала.",
 }
 

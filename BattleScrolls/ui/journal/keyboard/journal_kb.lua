@@ -242,14 +242,21 @@ end
 ---@param rowControl Control
 ---@param descriptor table|nil
 function JournalKeyboard:ShowTooltipFor(rowControl, descriptor)
-    local panelKB = journal.keyboard.panel
-    local isPanel = descriptor and descriptor.type == "panel" and descriptor.panelSpec
-
-    if isPanel and panelKB and panelKB.IsAvailable() then
-        journal.keyboard.tooltips.Hide()
-        if panelKB.Show(self, descriptor.panelSpec) then
-            return
+    -- Panel specs are click-toggled, not shown on hover: the panel is large
+    -- enough that having it appear under the pointer is distracting. Hovering a
+    -- panel row shows nothing; clicking it opens the pane.
+    if descriptor and descriptor.type == "panel" then
+        -- A hint, so the pane is still discoverable now that hovering does not
+        -- open it. Suppressed while the pane is already up.
+        local panelKB = journal.keyboard.panel
+        if panelKB and panelKB.IsAvailable() and not panelKB.IsShowing() then
+            journal.keyboard.tooltips.Show(rowControl, {
+                type = "text",
+                title = "",
+                text = GetString(BATTLESCROLLS_PC_KB_CLICK_FOR_DETAILS),
+            })
         end
+        return
     end
 
     -- The groupTable descriptor carries no data; the member rows have to be
@@ -501,6 +508,19 @@ end
 ---Handles activation of a row in the current mode.
 ---@param entry table The ZO_GamepadEntryData-shaped entry that was clicked
 function JournalKeyboard:OnRowClicked(entry)
+    -- A row carrying a panel spec toggles the detail pane wherever it appears
+    -- (every stats tab leads with one).
+    local tooltip = entry.tooltip
+    if tooltip and tooltip.type == "panel" and tooltip.panelSpec then
+        local panelKB = journal.keyboard.panel
+        if panelKB and panelKB.IsAvailable() then
+            if not panelKB.Toggle(self, tooltip.panelSpec) then
+                journal.keyboard.tooltips.Hide()
+            end
+            return
+        end
+    end
+
     if self.mode == NAVIGATION_MODE.INSTANCES then
         if entry.isSettings then
             self:OpenSettings()
