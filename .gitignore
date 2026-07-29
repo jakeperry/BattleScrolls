@@ -2,3 +2,7 @@
 eso-api-lua-intellij-baertram_API101048_2
 LibAsync
 LibGroupBroadcast
+
+# macOS Finder metadata. A stray one inside BattleScrolls/ would otherwise be
+# packaged into the release zips.
+.DS_Store
