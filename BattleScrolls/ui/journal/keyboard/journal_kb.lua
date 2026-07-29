@@ -14,7 +14,8 @@
 -- reused as-is: it only ever touches plain fields and three
 -- methods on journalUI, all provided below.
 --
--- Not yet ported: the Aggregate/pivot view and the group table.
+-- Pivot fields are advanced by clicking rather than via a
+-- chooser dialog; options needing multi-select are skipped.
 -----------------------------------------------------------
 
 if not SemisPlaygroundCheckAccess() then
@@ -99,6 +100,10 @@ function JournalKeyboard:Initialize(control)
     self.instanceList = journal.keyboard.ListCollector:New(onCommit)
     self.encounterList = journal.keyboard.ListCollector:New(onCommit)
     self.statsList = journal.keyboard.ListCollector:New(onCommit)
+    self.pivotList = journal.keyboard.ListCollector:New(onCommit)
+
+    self.pivotQuery = nil
+    self.pivotResult = nil
 
     self:InitializeScrollList()
     self:InitializeHandlers()
@@ -135,6 +140,7 @@ function JournalKeyboard:InitializeScene()
         elseif newState == SCENE_HIDDEN then
             journal.keyboard.tooltips.Hide()
             self:HidePanel()
+            self:CancelPivot()
             -- Decoded encounters are large; do not hold them while closed.
             self:ClearDecodeCache()
             self.selectedInstance = nil
@@ -305,6 +311,86 @@ function JournalKeyboard:BuildGroupTableDescriptor()
     return descriptor
 end
 
+-------------------------
+-- Aggregate / pivot
+-------------------------
+
+function JournalKeyboard:EnterPivot()
+    self:CancelPivot()
+    self.pivotQuery = journal.pivot.defaultQuery()
+    self.pivotResult = nil
+    self.mode = NAVIGATION_MODE.PIVOT
+    self:Refresh()
+end
+
+---Cancels any query in flight and drops pivot state.
+function JournalKeyboard:CancelPivot()
+    if self.pivotFiber then
+        self.pivotFiber:Cancel()
+        self.pivotFiber = nil
+    end
+    self.pivotQuery = nil
+    self.pivotResult = nil
+end
+
+---Runs the configured query, then swaps the list over to the results.
+function JournalKeyboard:RunPivotQuery()
+    if not self.pivotQuery or self.pivotFiber then return end
+
+    self.pivotList:Clear()
+    self.pivotList:SetNoItemText(GetString(BATTLESCROLLS_LIST_LOADING))
+    self.pivotList:Commit()
+
+    local pivotQuery = self.pivotQuery
+    local engine = journal.pivot.engine
+
+    self.pivotFiber = BattleScrolls.Effect.Async(function()
+        local result = engine.runQueryAsync(pivotQuery, function(current, total)
+            -- Progress goes in the empty-list text: there is no keybind strip or
+            -- gamepad header here to put it in.
+            self.pivotList:SetNoItemText(
+                zo_strformat(GetString(BATTLESCROLLS_PIVOT_LOADING), current, total))
+            self.pivotList:Commit()
+        end):Await()
+
+        if not result then return end
+
+        if #result.rows == 0 then
+            -- Stay on the config so the query can be adjusted, and say why.
+            self.pivotResult = nil
+            self.pivotList:SetNoItemText(GetString(BATTLESCROLLS_PIVOT_NO_RESULTS))
+            self.pivotList:Commit()
+            return
+        end
+
+        self.pivotResult = result
+        if self.mode == NAVIGATION_MODE.PIVOT then
+            self:Refresh()
+        end
+    end):Ensure(function()
+        self.pivotFiber = nil
+        BattleScrolls.gc:RequestGC(5)
+    end):Run()
+end
+
+---Handles a click on a pivot config row.
+---@param entry table
+function JournalKeyboard:OnPivotRowClicked(entry)
+    if entry.pivotRun then
+        self:RunPivotQuery()
+        return
+    end
+
+    if entry.pivotField and self.pivotQuery then
+        if journal.keyboard.pivot.CycleField(self.pivotQuery, entry.pivotField) then
+            self:Refresh(true)
+        else
+            -- Only reachable for fields whose every option needs a dialog.
+            self:Notify(GetString(BATTLESCROLLS_PC_KB_NOT_YET))
+        end
+    end
+end
+
 ---Tears down the docked panel, if one is showing.
 function JournalKeyboard:HidePanel()
     local panelKB = journal.keyboard.panel
@@ -356,6 +442,8 @@ function JournalKeyboard:GetCurrentCollector()
         return self.encounterList
     elseif self.mode == NAVIGATION_MODE.STATS then
         return self.statsList
+    elseif self.mode == NAVIGATION_MODE.PIVOT then
+        return self.pivotList
     end
     return nil
 end
@@ -402,6 +490,7 @@ function JournalKeyboard:ClearDecodeCache()
 end
 
 function JournalKeyboard:ResetToInstances()
+    self:CancelPivot()
     self.mode = NAVIGATION_MODE.INSTANCES
     self.selectedInstance = nil
     self.selectedEncounter = nil
@@ -416,17 +505,18 @@ function JournalKeyboard:OnRowClicked(entry)
         if entry.isSettings then
             self:OpenSettings()
         elseif entry.isPivot then
-            -- Aggregate/pivot needs its own keyboard presentation.
-            self:Notify(GetString(BATTLESCROLLS_PC_KB_NOT_YET))
+            self:EnterPivot()
         elseif entry.data then
             self.selectedInstance = entry.data
             self.mode = NAVIGATION_MODE.ENCOUNTERS
             self.selectedEncounterTab = ENCOUNTER_TAB.ALL
             self:Refresh()
         end
+    elseif self.mode == NAVIGATION_MODE.PIVOT then
+        self:OnPivotRowClicked(entry)
     elseif self.mode == NAVIGATION_MODE.ENCOUNTERS then
         if entry.isPivot then
-            self:Notify(GetString(BATTLESCROLLS_PC_KB_NOT_YET))
+            self:EnterPivot()
         elseif entry.data then
             -- A different encounter invalidates everything decoded for the last one.
             self:ClearDecodeCache()
@@ -439,7 +529,17 @@ function JournalKeyboard:OnRowClicked(entry)
 end
 
 function JournalKeyboard:GoBack()
-    if self.mode == NAVIGATION_MODE.STATS then
+    if self.mode == NAVIGATION_MODE.PIVOT then
+        if self.pivotResult then
+            -- Results back to the config that produced them, not out of the view.
+            self.pivotResult = nil
+            self:Refresh()
+        else
+            self:CancelPivot()
+            self.mode = NAVIGATION_MODE.INSTANCES
+            self:Refresh()
+        end
+    elseif self.mode == NAVIGATION_MODE.STATS then
         self:ClearDecodeCache()
         self.selectedEncounter = nil
         self.mode = NAVIGATION_MODE.ENCOUNTERS
@@ -650,6 +750,13 @@ function JournalKeyboard:Refresh(skipTabs)
         local zone = self.selectedInstance and self.selectedInstance.zone or ""
         self.subtitleLabel:SetText(zone)
         journal.controllers.encounterList.refresh(self)
+    elseif self.mode == NAVIGATION_MODE.PIVOT then
+        self.subtitleLabel:SetText(GetString(BATTLESCROLLS_PIVOT_ENTRY))
+        if self.pivotResult then
+            journal.keyboard.pivot.RenderResult(self.pivotList, self.pivotResult)
+        else
+            journal.keyboard.pivot.RenderConfig(self.pivotList, self.pivotQuery, self)
+        end
     elseif self.mode == NAVIGATION_MODE.STATS then
         self.subtitleLabel:SetText(self:BuildStatsSubtitle())
         -- Async: decodes if needed, renders the tab through the shared renderers,
