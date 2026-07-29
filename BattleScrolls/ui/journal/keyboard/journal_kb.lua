@@ -14,8 +14,7 @@
 -- reused as-is: it only ever touches plain fields and three
 -- methods on journalUI, all provided below.
 --
--- Not yet ported: the Aggregate/pivot view, sub-view switching
--- within a tab group, and the group table.
+-- Not yet ported: the Aggregate/pivot view and the group table.
 -----------------------------------------------------------
 
 if not SemisPlaygroundCheckAccess() then
@@ -35,6 +34,7 @@ journal.keyboard = journal.keyboard or {}
 local SCENE_NAME = "battleScrollsJournalKeyboard"
 local ROW_HEIGHT = 32
 local HEADER_HEIGHT = 30
+local SUBTAB_STRIP_HEIGHT = 30
 local ROW_DATA = 1
 local HEADER_DATA = 2
 
@@ -63,6 +63,7 @@ function JournalKeyboard:Initialize(control)
     self.subtitleLabel = control:GetNamedChild("Subtitle")
     self.emptyLabel = control:GetNamedChild("EmptyText")
     self.tabsControl = control:GetNamedChild("Tabs")
+    self.subTabsControl = control:GetNamedChild("SubTabs")
     self.listControl = control:GetNamedChild("List")
     self.backButton = control:GetNamedChild("Back")
 
@@ -485,6 +486,87 @@ function JournalKeyboard:RefreshTabs()
     end
 
     self:SetActiveTab(1)
+    self:RefreshSubTabs()
+end
+
+-------------------------
+-- Sub-views
+-------------------------
+
+---Builds the secondary strip for tab groups that have more than one visible
+---sub-view (Damage -> Boss Damage Done / Damage Done, and similarly for Healing
+---and Effects). Collapses to nothing otherwise.
+function JournalKeyboard:RefreshSubTabs()
+    self.subTabButtons = self.subTabButtons or {}
+
+    local subViews = self:GetVisibleSubViews()
+
+    for i = 1, #self.subTabButtons do
+        self.subTabButtons[i]:SetHidden(true)
+    end
+
+    if #subViews <= 1 then
+        self.subTabsControl:SetHeight(0)
+        return
+    end
+
+    self.subTabsControl:SetHeight(SUBTAB_STRIP_HEIGHT)
+
+    local previous = nil
+    for i, tab in ipairs(subViews) do
+        local button = self.subTabButtons[i]
+        if not button then
+            button = CreateControlFromVirtual("$(parent)SubTab", self.subTabsControl,
+                "ZO_DefaultButton", i)
+            button:SetHeight(24)
+            self.subTabButtons[i] = button
+        end
+
+        local labelId = journal.SubViewLabels[tab]
+        button:SetText(labelId and GetString(_G[labelId]) or "")
+        button:SetWidth(zo_max(90, (button:GetLabelControl():GetTextWidth() or 0) + 40))
+        button:ClearAnchors()
+        if previous then
+            button:SetAnchor(LEFT, previous, RIGHT, 8, 0)
+        else
+            button:SetAnchor(LEFT, self.subTabsControl, LEFT, 4, 0)
+        end
+        button:SetHidden(false)
+        -- The current sub-view reads as "you are here" and blocks a no-op refresh.
+        button:SetEnabled(tab ~= self.selectedTab)
+        button:SetHandler("OnClicked", function()
+            self:SelectSubView(tab)
+        end)
+
+        previous = button
+    end
+end
+
+---@return StatsTab[] Visible sub-views for the active tab's group, empty if none
+function JournalKeyboard:GetVisibleSubViews()
+    if self.mode ~= NAVIGATION_MODE.STATS then return {} end
+
+    local groupKey = self.selectedTab and journal.TabToGroup[self.selectedTab]
+    if not groupKey then return {} end
+
+    local tabVis = self.decodedEncounter and self.decodedEncounter._tabVisibility
+    if not tabVis then return {} end
+
+    return journal.chronicler.getVisibleSubViews(groupKey, tabVis) or {}
+end
+
+---Switches to a sub-view, remembering it so returning to the group lands here.
+---@param tab number StatsTab value
+function JournalKeyboard:SelectSubView(tab)
+    if tab == self.selectedTab then return end
+
+    local groupKey = journal.TabToGroup[tab]
+    if groupKey then
+        self.lastSubView[groupKey] = tab
+    end
+    self.selectedTab = tab
+    -- Skip the tab strip: the parent tab has not changed, only the sub-view.
+    self:Refresh(true)
 end
 
 -------------------------
@@ -499,6 +581,10 @@ function JournalKeyboard:Refresh(skipTabs)
 
     if not skipTabs then
         self:RefreshTabs()
+    else
+        -- Parent tab unchanged, but the active sub-view (and so which button is
+        -- disabled) may have.
+        self:RefreshSubTabs()
     end
 
     if self.mode == NAVIGATION_MODE.INSTANCES then

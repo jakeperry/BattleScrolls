@@ -105,9 +105,17 @@
 					<Anchor point="TOPRIGHT" relativeTo="$(parent)Tabs" relativePoint="BOTTOMRIGHT" offsetY="2"/>
 				</Texture>
 
+				<!-- Sub-view strip, populated in Lua. Collapsed to zero height when
+				     the active tab group has fewer than two visible sub-views. -->
+				<Control name="$(parent)SubTabs">
+					<Anchor point="TOPLEFT" relativeTo="$(parent)TabsDivider" relativePoint="BOTTOMLEFT" offsetY="4"/>
+					<Anchor point="TOPRIGHT" relativeTo="$(parent)TabsDivider" relativePoint="BOTTOMRIGHT" offsetY="4"/>
+					<Dimensions y="0"/>
+				</Control>
+
 				<!-- Scrollable row area -->
 				<Control name="$(parent)List" inherits="ZO_ScrollList">
-					<Anchor point="TOPLEFT" relativeTo="$(parent)TabsDivider" relativePoint="BOTTOMLEFT" offsetX="4" offsetY="6"/>
+					<Anchor point="TOPLEFT" relativeTo="$(parent)SubTabs" relativePoint="BOTTOMLEFT" offsetX="4" offsetY="6"/>
 					<Anchor point="BOTTOMRIGHT" offsetX="-24" offsetY="-52"/>
 				</Control>
 
