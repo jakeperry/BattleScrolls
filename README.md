@@ -46,19 +46,23 @@ Either the PC or the console download works — the client reads both `.txt` and
 Optional: [LibHarvensAddonSettings](https://www.esoui.com/downloads/info1097-LibHarvensAddonSettings.html)
 adds a Battle Scrolls entry to the standard addon settings panel.
 
-#### Gamepad Mode on PC
+#### Interface modes on PC
 
-The journal is built on ESO's gamepad interface, so it only renders correctly
-while the client is in **Gamepad Mode** (Settings → Gameplay → Gamepad Mode).
+Both modes are supported.
 
-- **In Gamepad Mode** — everything works as it does on console, including the
-  Journal entry in the main menu and the Battle Scrolls page on the character
-  sheet.
-- **In Keyboard Mode** — the DPS meter still works normally. The journal
-  declines to open and tells you to switch modes.
+- **Gamepad Mode** — identical to console, including the Journal entry in the
+  gamepad main menu and the Battle Scrolls page on the character sheet.
+- **Keyboard Mode** — a native mouse-driven window covering instances,
+  encounters, the metrics tabs, the group comparison, Aggregate queries, and
+  settings (via LibAddonMenu-2.0, under Settings → Addons).
 
-If Gamepad Mode is set to **Automatic**, picking up a controller is enough — the
-client switches interfaces on its own and the journal then opens normally.
+Both are driven by the same recording and analysis code, so your history is
+shared between them.
+
+A few things are gamepad-only for now: sorting the group comparison table, and
+the Aggregate options that need a multi-select dialog (choosing specific zones,
+instances or boss names, and a custom day count). In keyboard mode, clicking an
+Aggregate field cycles through its available options.
 
 ## Usage
 
@@ -76,7 +80,11 @@ key bound under **Controls → Battle Scrolls → Open Battle Scrolls**. Browse:
 3. **Metrics** - Detailed damage, healing, and effect breakdowns
 
 ### Configuration
-All settings are available in the Journal's Settings tab:
+All settings are available in the Journal's Settings tab. On PC in keyboard
+mode they appear under **Settings → Addons → Battle Scrolls** instead, which
+needs [LibAddonMenu-2.0](https://www.esoui.com/downloads/info7-LibAddonMenu.html).
+
+Settings cover:
 - Recording options (zones, fight types)
 - Effect tracking (buffs, debuffs)
 - Memory management (storage limits)
