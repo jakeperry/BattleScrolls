@@ -916,6 +916,14 @@ local strings = {
     [BATTLESCROLLS_PIVOT_DESC_BY] = "<<1>> par <<2>>",
     [BATTLESCROLLS_PIVOT_DESC_CROSS] = "× <<1>>",
     [BATTLESCROLLS_PIVOT_DESC_N_METRICS] = "<<1[$d métrique/$d métriques]>>",
+
+    -------------------------
+    -- PC support
+    -------------------------
+    [BATTLESCROLLS_PC_KEYBIND_OPEN_JOURNAL] = "Ouvrir Battle Scrolls",
+    [BATTLESCROLLS_PC_NOT_READY] = "Battle Scrolls est encore en cours de chargement. Réessayez dans un instant.",
+    [BATTLESCROLLS_PC_REQUIRES_GAMEPAD_MODE] = "Le journal Battle Scrolls utilise l'interface manette. Activez le mode manette dans les paramètres, ou prenez une manette s'il est réglé sur Automatique, puis rouvrez-le.",
+    [BATTLESCROLLS_PC_KB_NOT_YET] = "Pas encore disponible en mode clavier. Passez en mode manette pour le journal complet.",
 }
 
 -- Register translations

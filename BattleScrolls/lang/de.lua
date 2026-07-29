@@ -916,6 +916,14 @@ local strings = {
     [BATTLESCROLLS_PIVOT_DESC_BY] = "<<1>> nach <<2>>",
     [BATTLESCROLLS_PIVOT_DESC_CROSS] = "× <<1>>",
     [BATTLESCROLLS_PIVOT_DESC_N_METRICS] = "<<1[$d Metrik/$d Metriken]>>",
+
+    -------------------------
+    -- PC support
+    -------------------------
+    [BATTLESCROLLS_PC_KEYBIND_OPEN_JOURNAL] = "Battle Scrolls öffnen",
+    [BATTLESCROLLS_PC_NOT_READY] = "Battle Scrolls lädt noch. Versuche es in einem Moment erneut.",
+    [BATTLESCROLLS_PC_REQUIRES_GAMEPAD_MODE] = "Das Battle-Scrolls-Journal verwendet die Gamepad-Oberfläche. Aktiviere den Gamepad-Modus in den Einstellungen oder nimm einen Controller in die Hand, wenn er auf Automatisch gesetzt ist, und öffne es dann erneut.",
+    [BATTLESCROLLS_PC_KB_NOT_YET] = "In der Tastaturansicht noch nicht verfügbar. Wechsle in den Gamepad-Modus für das vollständige Journal.",
 }
 
 -- Register translations

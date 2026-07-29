@@ -87,6 +87,9 @@ All settings are available in the Journal's Settings tab:
 - English, Russian - reviewed by native speakers
 - German, French, Spanish, Japanese, Chinese - AI-generated
 
+The PC-only strings (keybind name and the Gamepad Mode notices) are
+AI-generated in every language, Russian included.
+
 ## Support
 
 - **GitHub**: [Issues](https://github.com/vladislavsheludchenkov/BattleScrolls/issues)

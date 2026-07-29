@@ -918,6 +918,14 @@ local strings = {
     [BATTLESCROLLS_PIVOT_DESC_BY] = "<<1>> — <<2>>",
     [BATTLESCROLLS_PIVOT_DESC_CROSS] = "× <<1>>",
     [BATTLESCROLLS_PIVOT_DESC_N_METRICS] = "<<1[$d метрика/$d метрики/$d метрик]>>",
+
+    -------------------------
+    -- PC support
+    -------------------------
+    [BATTLESCROLLS_PC_KEYBIND_OPEN_JOURNAL] = "Открыть Battle Scrolls",
+    [BATTLESCROLLS_PC_NOT_READY] = "Battle Scrolls ещё загружается. Повторите попытку через мгновение.",
+    [BATTLESCROLLS_PC_REQUIRES_GAMEPAD_MODE] = "Журнал Battle Scrolls использует интерфейс геймпада. Включите режим геймпада в настройках или возьмите контроллер, если выбран режим «Автоматически», затем откройте журнал снова.",
+    [BATTLESCROLLS_PC_KB_NOT_YET] = "Пока недоступно в режиме клавиатуры. Переключитесь в режим геймпада для полного журнала.",
 }
 
 BS_STRINGS = strings
