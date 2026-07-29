@@ -14,9 +14,8 @@
 -- reused as-is: it only ever touches plain fields and three
 -- methods on journalUI, all provided below.
 --
--- Not yet ported: the Aggregate/pivot view, panel-type tooltips
--- (they fall back to title-only), sub-view switching within a
--- tab group, and the settings panel.
+-- Not yet ported: the Aggregate/pivot view, sub-view switching
+-- within a tab group, and the group table.
 -----------------------------------------------------------
 
 if not SemisPlaygroundCheckAccess() then
@@ -134,6 +133,7 @@ function JournalKeyboard:InitializeScene()
             self:ResetToInstances()
         elseif newState == SCENE_HIDDEN then
             journal.keyboard.tooltips.Hide()
+            self:HidePanel()
             -- Decoded encounters are large; do not hold them while closed.
             self:ClearDecodeCache()
             self.selectedInstance = nil
@@ -216,15 +216,44 @@ function JournalKeyboard:SetupRow(rowControl, data)
 
     rowControl:SetHandler("OnMouseEnter", function()
         highlight:SetAlpha(1)
-        journal.keyboard.tooltips.Show(rowControl, entry.tooltip)
+        self:ShowTooltipFor(rowControl, entry.tooltip)
     end)
     rowControl:SetHandler("OnMouseExit", function()
         highlight:SetAlpha(0)
         journal.keyboard.tooltips.Hide()
+        -- The overview panel is deliberately left up: it is a docked detail
+        -- pane, not a hover tooltip, so it persists until another row replaces
+        -- it or the view changes.
     end)
     rowControl:SetHandler("OnClicked", function()
         self:OnRowClicked(entry)
     end)
+end
+
+---Routes a tooltip descriptor to the right presenter: rich panel specs go to the
+---docked OverviewPanel, everything else to the hover tooltip.
+---@param rowControl Control
+---@param descriptor table|nil
+function JournalKeyboard:ShowTooltipFor(rowControl, descriptor)
+    local panelKB = journal.keyboard.panel
+    local isPanel = descriptor and descriptor.type == "panel" and descriptor.panelSpec
+
+    if isPanel and panelKB and panelKB.IsAvailable() then
+        journal.keyboard.tooltips.Hide()
+        if panelKB.Show(self, descriptor.panelSpec) then
+            return
+        end
+    end
+
+    journal.keyboard.tooltips.Show(rowControl, descriptor)
+end
+
+---Tears down the docked panel, if one is showing.
+function JournalKeyboard:HidePanel()
+    local panelKB = journal.keyboard.panel
+    if panelKB then
+        panelKB.Hide(self)
+    end
 end
 
 function JournalKeyboard:SetupHeader(rowControl, data)
@@ -464,6 +493,10 @@ end
 
 ---@param skipTabs boolean|nil Skip rebuilding the tab bar (used from tab callbacks)
 function JournalKeyboard:Refresh(skipTabs)
+    -- Any list change invalidates whatever the panel was showing, and leaving a
+    -- stale one docked would also keep the window shifted left.
+    self:HidePanel()
+
     if not skipTabs then
         self:RefreshTabs()
     end
