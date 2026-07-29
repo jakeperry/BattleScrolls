@@ -35,12 +35,13 @@ and extract it into your AddOns folder:
 
 You should end up with `AddOns/BattleScrolls/BattleScrolls.txt`.
 
-**Dependencies are not installed automatically on PC.** Install both from ESOUI
-first, and make sure you get the **PC** builds — the console downloads ship a
-`.addon` manifest instead of `.txt` and will not load:
+**Dependencies are not installed automatically on PC.** Install both first:
 
 - [LibGroupBroadcast](https://www.esoui.com/downloads/info3866-LibGroupBroadcast.html) (95 or newer)
 - [LibAsync](https://www.esoui.com/downloads/info2211-LibAsync.html) (3.1.0 or newer)
+
+Either the PC or the console download works — the client reads both `.txt` and
+`.addon` manifests.
 
 Optional: [LibHarvensAddonSettings](https://www.esoui.com/downloads/info1097-LibHarvensAddonSettings.html)
 adds a Battle Scrolls entry to the standard addon settings panel.
@@ -53,9 +54,11 @@ while the client is in **Gamepad Mode** (Settings → Gameplay → Gamepad Mode)
 - **In Gamepad Mode** — everything works as it does on console, including the
   Journal entry in the main menu and the Battle Scrolls page on the character
   sheet.
-- **In Keyboard Mode** — the DPS meter still works normally. Opening the journal
-  prompts you to switch to Gamepad Mode, and switches you back automatically
-  when you close it.
+- **In Keyboard Mode** — the DPS meter still works normally. The journal
+  declines to open and tells you to switch modes.
+
+If Gamepad Mode is set to **Automatic**, picking up a controller is enough — the
+client switches interfaces on its own and the journal then opens normally.
 
 ## Usage
 

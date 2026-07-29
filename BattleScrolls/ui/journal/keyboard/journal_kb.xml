@@ -1,0 +1,128 @@
+<GuiXml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sir.insidi.at/or/schema/esoui.xsd">
+	<Controls>
+
+		<!-- Row template: icon + name + right-aligned value.
+		     Declaration order matters: anchors may only reference siblings that
+		     already exist, so Value is declared before the Name that anchors to it.
+		     No width is set; ZO_ScrollList sizes rows to the list. -->
+		<Button name="BattleScrolls_KB_Row" virtual="true">
+			<Dimensions y="32"/>
+
+			<Controls>
+				<Texture name="$(parent)BG" inherits="ZO_ThinListBgStrip"/>
+
+				<Texture name="$(parent)Highlight" textureFile="EsoUI/Art/Miscellaneous/listItem_highlight.dds"
+					alpha="0">
+					<AnchorFill/>
+					<TextureCoords left="0" right="1" top="0" bottom=".625"/>
+				</Texture>
+
+				<Texture name="$(parent)Icon">
+					<Dimensions x="26" y="26"/>
+					<Anchor point="LEFT" offsetX="6"/>
+				</Texture>
+
+				<Label name="$(parent)Value" font="ZoFontGame" verticalAlignment="CENTER"
+					horizontalAlignment="RIGHT" wrapMode="ELLIPSIS"
+					color="INTERFACE_COLOR_TYPE_TEXT_COLORS:INTERFACE_TEXT_COLOR_NORMAL">
+					<Dimensions x="220" y="32"/>
+					<Anchor point="RIGHT" offsetX="-10"/>
+				</Label>
+
+				<Label name="$(parent)Name" font="ZoFontGame" verticalAlignment="CENTER"
+					horizontalAlignment="LEFT" wrapMode="ELLIPSIS"
+					color="INTERFACE_COLOR_TYPE_TEXT_COLORS:INTERFACE_TEXT_COLOR_SELECTED">
+					<Dimensions y="32"/>
+					<Anchor point="LEFT" relativeTo="$(parent)Icon" relativePoint="RIGHT" offsetX="8"/>
+					<Anchor point="RIGHT" relativeTo="$(parent)Value" relativePoint="LEFT" offsetX="-8"/>
+				</Label>
+			</Controls>
+		</Button>
+
+		<!-- Section header row -->
+		<Control name="BattleScrolls_KB_Header" virtual="true">
+			<Dimensions y="30"/>
+
+			<Controls>
+				<!-- offsetX matches a row's text indent (icon 26 + 6 left + 8 gap)
+				     so headers line up with the entries beneath them. -->
+				<Label name="$(parent)Name" font="ZoFontHeader3" verticalAlignment="BOTTOM"
+					horizontalAlignment="LEFT" color="C5C29E">
+					<Anchor point="BOTTOMLEFT" offsetX="40" offsetY="-4"/>
+				</Label>
+
+				<Texture name="$(parent)Divider" textureFile="EsoUI/Art/Miscellaneous/centerdivider.dds"
+					tier="LOW">
+					<Dimensions y="4"/>
+					<Anchor point="BOTTOMLEFT" offsetY="-1"/>
+					<Anchor point="BOTTOMRIGHT" offsetY="-1"/>
+				</Texture>
+			</Controls>
+		</Control>
+
+		<!-- Main window -->
+		<TopLevelControl name="BattleScrolls_Journal_Keyboard_TopLevel" hidden="true" mouseEnabled="true"
+			movable="true" clampedToScreen="true">
+			<Dimensions x="900" y="700"/>
+			<Anchor point="CENTER" relativeTo="GuiRoot" relativePoint="CENTER"/>
+
+			<OnInitialized>
+				BattleScrolls_Journal_Keyboard_OnInitialized(self)
+			</OnInitialized>
+
+			<Controls>
+				<Backdrop name="$(parent)Bg" inherits="ZO_DefaultBackdrop">
+					<AnchorFill/>
+				</Backdrop>
+
+				<Label name="$(parent)Title" font="ZoFontWinH1" horizontalAlignment="CENTER">
+					<Anchor point="TOPLEFT" offsetX="16" offsetY="14"/>
+					<Anchor point="TOPRIGHT" offsetX="-16" offsetY="14"/>
+				</Label>
+
+				<Button name="$(parent)Close" inherits="ZO_CloseButton">
+					<Anchor point="TOPRIGHT" offsetX="-8" offsetY="8"/>
+				</Button>
+
+				<!-- Breadcrumb / current context -->
+				<Label name="$(parent)Subtitle" font="ZoFontGame" horizontalAlignment="LEFT" color="A8A093">
+					<Anchor point="TOPLEFT" offsetX="20" offsetY="54"/>
+					<Anchor point="TOPRIGHT" offsetX="-20" offsetY="54"/>
+				</Label>
+
+				<!-- Tab strip. Buttons are created in Lua from the shared
+				     controllers' getTabBarEntries(), so the tab set stays
+				     identical to the gamepad UI. -->
+				<Control name="$(parent)Tabs">
+					<Anchor point="TOPLEFT" offsetX="16" offsetY="78"/>
+					<Anchor point="TOPRIGHT" offsetX="-16" offsetY="78"/>
+					<Dimensions y="40"/>
+				</Control>
+
+				<Texture name="$(parent)TabsDivider" textureFile="EsoUI/Art/Miscellaneous/centerdivider.dds">
+					<Dimensions y="4"/>
+					<Anchor point="TOPLEFT" relativeTo="$(parent)Tabs" relativePoint="BOTTOMLEFT" offsetY="2"/>
+					<Anchor point="TOPRIGHT" relativeTo="$(parent)Tabs" relativePoint="BOTTOMRIGHT" offsetY="2"/>
+				</Texture>
+
+				<!-- Scrollable row area -->
+				<Control name="$(parent)List" inherits="ZO_ScrollList">
+					<Anchor point="TOPLEFT" relativeTo="$(parent)TabsDivider" relativePoint="BOTTOMLEFT" offsetX="4" offsetY="6"/>
+					<Anchor point="BOTTOMRIGHT" offsetX="-24" offsetY="-52"/>
+				</Control>
+
+				<Label name="$(parent)EmptyText" font="ZoFontGame" horizontalAlignment="CENTER"
+					color="A8A093" hidden="true">
+					<Anchor point="CENTER" relativeTo="$(parent)List" relativePoint="CENTER"/>
+				</Label>
+
+				<!-- Back button -->
+				<Button name="$(parent)Back" inherits="ZO_DefaultButton">
+					<Dimensions x="140" y="30"/>
+					<Anchor point="BOTTOMLEFT" offsetX="20" offsetY="-14"/>
+				</Button>
+			</Controls>
+		</TopLevelControl>
+
+	</Controls>
+</GuiXml>

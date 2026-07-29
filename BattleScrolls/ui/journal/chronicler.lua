@@ -423,6 +423,13 @@ local tooltipDispatch = {
 ---@param journalUI BattleScrolls_Journal_Gamepad
 ---@param selectedData table|nil
 function chronicler.refreshTooltip(journalUI, selectedData)
+    -- The keyboard journal draws its own tooltips on mouse hover (see
+    -- ui/journal/keyboard/tooltips_kb.lua) and has no gamepad tooltip panes,
+    -- group table or keybind strip to drive. Nothing below applies to it.
+    if journalUI.isKeyboard then
+        return
+    end
+
     chronicler.resetTooltips()
 
     local tooltip = selectedData and selectedData.tooltip
@@ -824,6 +831,15 @@ end
 ---@param journalUI BattleScrolls_Journal_Gamepad
 ---@param skipHeaderRefresh boolean|nil
 function chronicler.refreshList(journalUI, skipHeaderRefresh)
+    -- Tab callbacks built by getEncounterTabBarEntries call straight into here,
+    -- so this is where the keyboard journal has to be handed control. Everything
+    -- below drives gamepad-only machinery (keybind strips, parametric list
+    -- activation, the gamepad header).
+    if journalUI.isKeyboard then
+        journalUI:RefreshList(skipHeaderRefresh)
+        return
+    end
+
     -- If group table is active during tab switch, deactivate it first
     local groupTable = BattleScrolls.journal.groupTable
     if groupTable and groupTable:IsActive() then

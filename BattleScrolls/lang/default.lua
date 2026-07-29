@@ -935,6 +935,5 @@ ZO_CreateStringId("BATTLESCROLLS_PIVOT_DESC_N_METRICS", "<<1[$d metric/$d metric
 ZO_CreateStringId("BATTLESCROLLS_PC_KEYBIND_CATEGORY", "Battle Scrolls")
 ZO_CreateStringId("BATTLESCROLLS_PC_KEYBIND_OPEN_JOURNAL", "Open Battle Scrolls")
 ZO_CreateStringId("BATTLESCROLLS_PC_NOT_READY", "Battle Scrolls is still loading. Try again in a moment.")
-ZO_CreateStringId("BATTLESCROLLS_PC_REQUIRES_GAMEPAD_MODE", "The Battle Scrolls journal uses the gamepad interface. Enable Gamepad Mode under Settings, then reopen it.")
-ZO_CreateStringId("BATTLESCROLLS_PC_GAMEPAD_MODE_PROMPT", "The Battle Scrolls journal uses the gamepad interface.\n\nSwitch to Gamepad Mode and open it now? Your previous interface mode is restored when you close the journal.")
-ZO_CreateStringId("BATTLESCROLLS_PC_SWITCH_AND_OPEN", "Switch and Open")
+ZO_CreateStringId("BATTLESCROLLS_PC_REQUIRES_GAMEPAD_MODE", "The Battle Scrolls journal uses the gamepad interface. Set Gamepad Mode to On under Settings, or pick up a controller if it is set to Automatic, then reopen it.")
+ZO_CreateStringId("BATTLESCROLLS_PC_KB_NOT_YET", "Not available in keyboard mode yet. Switch to Gamepad Mode for the full journal.")
