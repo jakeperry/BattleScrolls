@@ -140,9 +140,49 @@ local function renderIconList(descriptor)
     end
 end
 
--- Shapes whose gamepad rendering is a full custom panel. Showing the title
--- alone is honest and cheap; richer keyboard equivalents come with the
--- overview panel port.
+---Renders the group comparison as an aligned text table. The member rows are
+---built by the journal (which owns the decode state) and handed over here; see
+---JournalKeyboard:BuildGroupTableDescriptor.
+---@param descriptor table
+local function renderGroupTable(descriptor)
+    addTitle(descriptor.title or GetString(BATTLESCROLLS_TAB_GROUP))
+
+    local members = descriptor.members
+    if not members or #members == 0 then return end
+
+    ZO_Tooltip_AddDivider(InformationTooltip)
+
+    local r, g, b = normalColor()
+    local hr, hg, hb = highlightColor()
+
+    -- Fixed-width columns so the values line up in a proportional font as well
+    -- as they reasonably can. The name column is truncated rather than wrapped.
+    local function row(name, dps, crit, dtps, hps, alive)
+        return string.format("%-20.20s %10s %7s %9s %9s %7s",
+            name, dps, crit, dtps, hps, alive)
+    end
+
+    InformationTooltip:AddLine(
+        row(GetString(BATTLESCROLLS_GROUP_COL_NAME), GetString(BATTLESCROLLS_STAT_DPS),
+            GetString(BATTLESCROLLS_GROUP_COL_CRIT), GetString(BATTLESCROLLS_STAT_DTPS),
+            GetString(BATTLESCROLLS_STAT_HPS), GetString(BATTLESCROLLS_GROUP_COL_ALIVE)),
+        "ZoFontGameSmall", hr, hg, hb)
+
+    for _, member in ipairs(members) do
+        -- Your own row is highlighted, matching the gamepad table.
+        local mr, mg, mb = r, g, b
+        if member.isLocal then
+            mr, mg, mb = hr, hg, hb
+        end
+        InformationTooltip:AddLine(
+            row(member.name, member.dps, member.crit, member.dtps, member.hps, member.alive),
+            "ZoFontGameSmall", mr, mg, mb)
+    end
+end
+
+-- Shapes whose gamepad rendering is a full custom panel with no keyboard
+-- equivalent. Panel specs are handled by ui/journal/keyboard/panel_kb.lua and
+-- never reach here.
 ---@param descriptor table
 local function renderUnsupported(descriptor)
     addTitle(descriptor.title or GetString(BATTLESCROLLS_TAB_OVERVIEW))
@@ -153,8 +193,8 @@ local RENDERERS = {
     detailRows = renderDetailRows,
     abilityList = renderAbilityList,
     iconList = renderIconList,
+    groupTable = renderGroupTable,
     panel = renderUnsupported,
-    groupTable = renderUnsupported,
     vengeancePerk = renderUnsupported,
 }
 

@@ -246,7 +246,63 @@ function JournalKeyboard:ShowTooltipFor(rowControl, descriptor)
         end
     end
 
+    -- The groupTable descriptor carries no data; the member rows have to be
+    -- derived from the decode state, which lives here.
+    if descriptor and descriptor.type == "groupTable" then
+        descriptor = self:BuildGroupTableDescriptor()
+    end
+
     journal.keyboard.tooltips.Show(rowControl, descriptor)
+end
+
+---Builds the group comparison rows for the groupTable tooltip.
+---
+---Reuses renderers.group.buildMemberList and derives the same columns the
+---gamepad table's BuildMasterList does, so both read from one source.
+---@return table descriptor
+function JournalKeyboard:BuildGroupTableDescriptor()
+    local descriptor = { type = "groupTable", title = GetString(BATTLESCROLLS_TAB_GROUP) }
+
+    local arithmancer = self.arithmancer
+    local encounter = self.decodedEncounter
+    if not arithmancer or not encounter then
+        return descriptor
+    end
+
+    local ctx = {
+        arithmancer = arithmancer,
+        encounter = encounter,
+        durationS = arithmancer:getDurationS(),
+    }
+
+    local ok, members = pcall(journal.renderers.group.buildMemberList, ctx)
+    if not ok or not members then
+        return descriptor
+    end
+
+    local utils = journal.utils
+    local rows = {}
+    for _, member in ipairs(members) do
+        local data = member.data
+        local durationS = data.durationMs / 1000
+        if durationS <= 0 then durationS = 1 end
+
+        rows[#rows + 1] = {
+            name = member.displayName or "",
+            isLocal = member.isLocal,
+            dps = utils.formatDPS(data.totalDamage / durationS),
+            crit = utils.formatPercent((data.critPercent or 0) * 100),
+            dtps = utils.formatDPS((data.totalDamageTaken or 0) / durationS),
+            hps = utils.formatDPS(data.healing and (data.healing.rawOut / durationS) or 0),
+            alive = utils.formatPercent(
+                (data.aliveTimeMs and data.durationMs > 0)
+                    and (data.aliveTimeMs / data.durationMs * 100)
+                    or 100),
+        }
+    end
+
+    descriptor.members = rows
+    return descriptor
 end
 
 ---Tears down the docked panel, if one is showing.
