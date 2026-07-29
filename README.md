@@ -1,6 +1,6 @@
 # Battle Scrolls
 
-Combat metrics tracking addon for The Elder Scrolls Online on consoles, with native gamepad UI.
+Combat metrics tracking addon for The Elder Scrolls Online, with native gamepad UI. Runs on console and PC.
 
 ## Features
 
@@ -14,13 +14,48 @@ Combat metrics tracking addon for The Elder Scrolls Online on consoles, with nat
 
 ## Installation
 
-**Console only** (PlayStation / Xbox)
+### Console (PlayStation / Xbox)
 
 1. In ESO, go to **Settings → Add-Ons → Browse Add-Ons**
 2. Search for "Battle Scrolls"
 3. Select and install
 
 Dependencies (LibGroupBroadcast, LibAsync) are installed automatically.
+
+### PC (Windows / Mac)
+
+Download `BattleScrolls-<version>-PC.zip` from the
+[releases page](https://github.com/vladislavsheludchenkov/BattleScrolls/releases)
+and extract it into your AddOns folder:
+
+| OS      | Path                                                                       |
+| ------- | -------------------------------------------------------------------------- |
+| Windows | `Documents\Elder Scrolls Online\live\AddOns\`                              |
+| Mac     | `~/Documents/Elder Scrolls Online/live/AddOns/`                            |
+
+You should end up with `AddOns/BattleScrolls/BattleScrolls.txt`.
+
+**Dependencies are not installed automatically on PC.** Install both from ESOUI
+first, and make sure you get the **PC** builds — the console downloads ship a
+`.addon` manifest instead of `.txt` and will not load:
+
+- [LibGroupBroadcast](https://www.esoui.com/downloads/info3866-LibGroupBroadcast.html) (95 or newer)
+- [LibAsync](https://www.esoui.com/downloads/info2211-LibAsync.html) (3.1.0 or newer)
+
+Optional: [LibHarvensAddonSettings](https://www.esoui.com/downloads/info1097-LibHarvensAddonSettings.html)
+adds a Battle Scrolls entry to the standard addon settings panel.
+
+#### Gamepad Mode on PC
+
+The journal is built on ESO's gamepad interface, so it only renders correctly
+while the client is in **Gamepad Mode** (Settings → Gameplay → Gamepad Mode).
+
+- **In Gamepad Mode** — everything works as it does on console, including the
+  Journal entry in the main menu and the Battle Scrolls page on the character
+  sheet.
+- **In Keyboard Mode** — the DPS meter still works normally. Opening the journal
+  prompts you to switch to Gamepad Mode, and switches you back automatically
+  when you close it.
 
 ## Usage
 
@@ -31,7 +66,8 @@ The DPS meter appears automatically during combat. Configure via Journal setting
 - Adjust position and scale
 
 ### Combat Journal
-Access the Journal from the main menu or keybind to browse:
+Access the Journal from the main menu, or on PC via the `/bs` chat command or a
+key bound under **Controls → Battle Scrolls → Open Battle Scrolls**. Browse:
 1. **Instances** - Combat sessions grouped by zone
 2. **Encounters** - Individual fights within each instance
 3. **Metrics** - Detailed damage, healing, and effect breakdowns

@@ -39,6 +39,7 @@ jobs:
           echo "VERSION=$VERSION" >> $GITHUB_ENV
           echo "ADDON_VERSION=$ADDON_VERSION" >> $GITHUB_ENV
           echo "ZIP_FULL_NAME=BattleScrolls-${VERSION}.zip" >> $GITHUB_ENV
+          echo "ZIP_PC_NAME=BattleScrolls-${VERSION}-PC.zip" >> $GITHUB_ENV
           echo "RELEASE_NOTES=$RELEASE_NOTES" >> $GITHUB_ENV
 
       - name: Show computed values
@@ -46,6 +47,7 @@ jobs:
           echo "VERSION=$VERSION"
           echo "ADDON_VERSION=$ADDON_VERSION"
           echo "ZIP_FULL_NAME=$ZIP_FULL_NAME"
+          echo "ZIP_PC_NAME=$ZIP_PC_NAME"
           echo "RELEASE_NOTES=$RELEASE_NOTES"
 
       - name: Verify release notes exist
@@ -68,15 +70,41 @@ jobs:
           echo "Manifest after replacement:"
           head -15 BattleScrolls/BattleScrolls.addon
 
+      - name: Generate PC manifest
+        run: |
+          # Derived from the (already substituted) console manifest, so load
+          # order and dependencies can never drift between platforms.
+          ./scripts/sync-manifest.sh \
+            --version "${{ env.VERSION }}" \
+            --addon-version "${{ env.ADDON_VERSION }}"
+
+          echo "PC manifest:"
+          head -15 BattleScrolls/BattleScrolls.txt
+
       - name: Include LICENSE in addon folder
         run: |
           cp LICENSE BattleScrolls/
 
-      - name: Create ZIP archive
+      - name: Create ZIP archives
         run: |
-          rm -f "${{ env.ZIP_FULL_NAME }}" || true
-          zip -r --quiet "${{ env.ZIP_FULL_NAME }}" BattleScrolls
-          ls -lh "${{ env.ZIP_FULL_NAME }}"
+          # Each platform ships only its own manifest: a stray manifest for the
+          # other platform is ignored by the client but confuses addon managers.
+          rm -f "${{ env.ZIP_FULL_NAME }}" "${{ env.ZIP_PC_NAME }}" || true
+
+          # Console (Bethesda.net)
+          zip -r --quiet "${{ env.ZIP_FULL_NAME }}" BattleScrolls \
+            -x "BattleScrolls/BattleScrolls.txt"
+
+          # PC (ESOUI / manual install)
+          zip -r --quiet "${{ env.ZIP_PC_NAME }}" BattleScrolls \
+            -x "BattleScrolls/BattleScrolls.addon"
+
+          ls -lh "${{ env.ZIP_FULL_NAME }}" "${{ env.ZIP_PC_NAME }}"
+
+          echo "Console zip manifest check:"
+          unzip -l "${{ env.ZIP_FULL_NAME }}" | grep -E "BattleScrolls\.(addon|txt)"
+          echo "PC zip manifest check:"
+          unzip -l "${{ env.ZIP_PC_NAME }}" | grep -E "BattleScrolls\.(addon|txt)"
 
       - name: Upload to Bethesda.net
         uses: m00nyONE/bnet-upload@a5bc28415932bf614f092bd04515ed333da1359f
@@ -93,7 +121,9 @@ jobs:
         uses: softprops/action-gh-release@v2
         if: startsWith(github.ref, 'refs/tags/')
         with:
-          files: ${{ env.ZIP_FULL_NAME }}
+          files: |
+            ${{ env.ZIP_FULL_NAME }}
+            ${{ env.ZIP_PC_NAME }}
           body_path: ${{ env.RELEASE_NOTES }}
           draft: false
           prerelease: false

@@ -1,9 +1,9 @@
 ## Title: Battle Scrolls
 ## Author: Semigroup1329
-## Description: Combat metrics tracking on consoles with native gamepad UI.
-## APIVersion: 101049 101050
-## AddOnVersion: {{addon_version}}
-## Version: {{version}}
+## Description: Combat metrics tracking with native gamepad UI. The journal requires Gamepad Mode.
+## APIVersion: 101050 101051
+## AddOnVersion: 0
+## Version: dev
 ## IsLibrary: False
 ## DependsOn: LibGroupBroadcast>=95 LibAsync>=30100
 ## OptionalDependsOn: LibHarvensAddonSettings

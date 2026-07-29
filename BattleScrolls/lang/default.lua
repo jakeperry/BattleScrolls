@@ -927,3 +927,14 @@ ZO_CreateStringId("BATTLESCROLLS_PIVOT_TIP_AGGREGATION", "How values are combine
 ZO_CreateStringId("BATTLESCROLLS_PIVOT_DESC_BY", "<<1>> by <<2>>")
 ZO_CreateStringId("BATTLESCROLLS_PIVOT_DESC_CROSS", "× <<1>>")
 ZO_CreateStringId("BATTLESCROLLS_PIVOT_DESC_N_METRICS", "<<1[$d metric/$d metrics]>>")
+
+-------------------------
+-- PC support (keybinds, slash commands, Gamepad Mode prompt)
+-- Unused on console, where these entry points do not exist.
+-------------------------
+ZO_CreateStringId("BATTLESCROLLS_PC_KEYBIND_CATEGORY", "Battle Scrolls")
+ZO_CreateStringId("BATTLESCROLLS_PC_KEYBIND_OPEN_JOURNAL", "Open Battle Scrolls")
+ZO_CreateStringId("BATTLESCROLLS_PC_NOT_READY", "Battle Scrolls is still loading. Try again in a moment.")
+ZO_CreateStringId("BATTLESCROLLS_PC_REQUIRES_GAMEPAD_MODE", "The Battle Scrolls journal uses the gamepad interface. Enable Gamepad Mode under Settings, then reopen it.")
+ZO_CreateStringId("BATTLESCROLLS_PC_GAMEPAD_MODE_PROMPT", "The Battle Scrolls journal uses the gamepad interface.\n\nSwitch to Gamepad Mode and open it now? Your previous interface mode is restored when you close the journal.")
+ZO_CreateStringId("BATTLESCROLLS_PC_SWITCH_AND_OPEN", "Switch and Open")
