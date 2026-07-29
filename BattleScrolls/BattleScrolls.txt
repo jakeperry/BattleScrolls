@@ -6,7 +6,7 @@
 ## Version: dev
 ## IsLibrary: False
 ## DependsOn: LibGroupBroadcast>=95 LibAsync>=30100
-## OptionalDependsOn: LibHarvensAddonSettings
+## OptionalDependsOn: LibHarvensAddonSettings LibAddonMenu-2.0
 ## SavedVariables: BattleScrollsSavedVariables
 
 ; Localization - default (English) must load first
@@ -119,6 +119,7 @@ ui/journal/dialogs.xml
 ; They reuse the shared renderers/controllers via a ZO_ParametricScrollList stand-in.
 ui/journal/keyboard/list_collector.lua
 ui/journal/keyboard/tooltips_kb.lua
+ui/journal/keyboard/settings_kb.lua
 ui/journal/keyboard/journal_kb.lua
 ui/journal/keyboard/journal_kb.xml
 
